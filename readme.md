@@ -195,8 +195,35 @@ db.test.aggregate([
 ```
 
 
+## $first aggregation operator 
+
+`$first` operator select the value of a specific field from the first document within the range of a group. it's very useful when we need to work with ordered data 
 
 
+
+```javascript
+db.test.aggregate([
+    {$group : {
+        _id : "gender",
+        firstSalary : { $first : "$salary"} // firstSalary will store the first salary of salary field from each group
+    }}
+])
+```
+
+## $last aggregation operator
+
+
+`$last` operator selects the value of a specific field from the last document within the range of a group. It's also very useful for working with ordered data
+
+
+```javascript
+db.test.aggregate([
+    {$group : {
+        _id : "gender",
+        lastSalary : { $last : "$salary"} // lastSalary will store the last salary of salary field from each group
+    }}
+])
+```
 
 
 
