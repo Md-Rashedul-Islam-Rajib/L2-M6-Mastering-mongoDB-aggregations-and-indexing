@@ -235,7 +235,7 @@ db.test.aggregate([
 let think we have document structured like this
 
 ```json
-{
+
     persons : {
         {
             name : 'mr x',
@@ -251,7 +251,7 @@ let think we have document structured like this
             interests : ['reading','riding', 'hiking']
         }
     }
-}
+
 
 ```
 
@@ -336,4 +336,33 @@ db.test.aggregate([
     },
     {$limit : 2} 
 ])
+```
+
+
+## $facet aggregation operator
+
+
+`$facet` operator used to perform multiple and parallel aggregations on the same document with a single aggregation pipeline. Each data processing section within `$facet` operator is called `sub-pipeline` which were processes data independently.
+
+
+```javascript
+db.test.aggregate([
+    {
+        $facet : {
+            "ageCount" : [{  //pipeline-1 -> ageCount
+                $group : {
+                    _id : "$age",
+                    count : {$sum :1} 
+                }
+            }],
+            "salaryCount" : [{ //pipeline-2 -> salaryCount
+                $group : {
+                    _id :"$salary",
+                    count : {$sum :1}
+                }
+            }]
+        }
+    }
+])
+
 ```
