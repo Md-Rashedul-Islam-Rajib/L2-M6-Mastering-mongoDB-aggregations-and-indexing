@@ -152,7 +152,21 @@ db.test.aggregate([
 ```
 Note : if we want to add all the field to products array replace `"$productName"` with `"$$ROOT"`
 
+## $avg aggregation operator
 
+`$avg` operator calculates the average of specific numeric fields within the range of each group
+
+
+```javascript
+db.test.aggregate([
+    {$group : {
+        _id : "gender",
+        avgSalary : { $avg : "$salary"} // avgSalary will store the average of salary field from each group
+    }}
+])
+```
+
+##
 
 
 
