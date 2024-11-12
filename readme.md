@@ -316,3 +316,24 @@ db.test.aggregate([
 ])
 ```
 
+## $limit aggregation operator
+
+`$limit` operator restricts the number of document pass through aggregation pipeline to a specific number
+
+
+```javascript
+db.test.aggregate([
+    {
+        $bucket : {
+            groupBy : "$age", 
+            boundaries : [20,40,60],
+            default : "above 60", 
+            output : { 
+                count : { $sum : 1},
+                fullDoc : { $push : "$$ROOT"}
+            }
+        }
+    },
+    {$limit : 2} 
+])
+```
