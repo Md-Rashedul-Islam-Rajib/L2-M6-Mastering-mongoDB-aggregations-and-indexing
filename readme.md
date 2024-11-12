@@ -161,12 +161,25 @@ Note : if we want to add all the field to products array replace `"$productName"
 db.test.aggregate([
     {$group : {
         _id : "gender",
-        avgSalary : { $avg : "$salary"} // avgSalary will store the average of salary field from each group
+        avgSalary : { $avg : "$salary"} // avgSalary will store the average salary of salary field from each group
     }}
 ])
 ```
 
-##
+## $min aggregation operator
+
+`$min` operator finds the minimum numeric value of a field within the range of a each
+
+
+```javascript
+db.test.aggregate([
+    {$group : {
+        _id : "gender",
+        minSalary : { $min : "$salary"} // minSalary will store the minimum salary of salary field from each group
+    }}
+])
+```
+
 
 
 
