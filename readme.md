@@ -180,7 +180,19 @@ db.test.aggregate([
 ])
 ```
 
+## $max aggregation operator
 
+`$max` operator finds the maximum numeric value of specific field within the range of a group
+
+
+```javascript
+db.test.aggregate([
+    {$group : {
+        _id : "gender",
+        maxSalary : { $max : "$salary"} // maxSalary will store the maximum salary of salary field from each group
+    }}
+])
+```
 
 
 
