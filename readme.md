@@ -227,7 +227,49 @@ db.test.aggregate([
 
 
 
+## $unwind aggregation operator
 
+`$unwind` operator explode each array element into individual document with the exact same id or identifier. MongoDB will create a new document for each element in the array of an array field.
+
+
+let think we have document structured like this
+
+```json
+{
+    persons : {
+        {
+            name : 'mr x',
+            age : 22,
+            interests : ['gaming','traveling','hiking']
+        },{
+            name: 'mr y',
+            age: 26,
+            interests : ['reading','traveling','hiking']
+        },{
+            name: 'mr z',
+            age: 25,
+            interests : ['reading','riding', 'hiking']
+        }
+    }
+}
+
+```
+
+now we want to to create group based on each unique value of interest array.  so we have to use `$unwind` operator for explode the element of interests array then try to use `$group` operator for creating group based on unique value of interests array.
+
+```javascript
+db.test.aggregate([
+    {
+        $unwind : "$interests" // flattening the interests array by using unwind operator
+    },
+    {
+        $group : {
+            _id : "$interests", // creating group based on the unique value of interests array
+            count : {$sum : 1}
+        }
+    }
+])
+```
 
 
 
