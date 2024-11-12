@@ -11,3 +11,15 @@ db.test.aggregate([ //aggregate command
 ])
 ```
 
+
+## $project aggregate operator
+
+`$project` aggregate operator functions similar to `project` command. it takes the field name of a document what you want to return.
+
+
+```javascript
+db.test.aggregate([ //aggregate command
+    {$match : {gender : "Male"}},  // $match operator with conditions
+    {$project : {name: 1,age:1}} //field want to return with the document
+])
+```
