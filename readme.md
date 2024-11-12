@@ -235,7 +235,6 @@ db.test.aggregate([
 let think we have document structured like this
 
 ```json
-
     persons : {
         {
             name : 'mr x',
@@ -251,8 +250,6 @@ let think we have document structured like this
             interests : ['reading','riding', 'hiking']
         }
     }
-
-
 ```
 
 now we want to to create group based on each unique value of interest array.  so we have to use `$unwind` operator for explode the element of interests array then try to use `$group` operator for creating group based on unique value of interests array.
@@ -363,6 +360,97 @@ db.test.aggregate([
             }]
         }
     }
+])
+
+```
+
+
+## $lookup aggregation operator
+
+`$lookup` operator used for combines data from different collections. it performs left outer join like sql language.
+
+let think we have two collection named `orders` and `customers` like this
+
+### Collection : `orders`
+
+```json
+{ "_id": 1, "customerId": 101, "totalAmount": 250 }
+{ "_id": 2, "customerId": 102, "totalAmount": 150 }
+{ "_id": 3, "customerId": 103, "totalAmount": 300 }
+
+```
+
+### Collection : `customers`
+
+```json
+{ "_id": 101, "name": "Alice", "email": "alice@example.com" }
+{ "_id": 102, "name": "Bob", "email": "bob@example.com" }
+{ "_id": 104, "name": "Charlie", "email": "charlie@example.com" }
+
+```
+
+now we want to join the `orders` and `customers` collection from `orders` collection based `customerId` field. so here we can use `$lookup` operator like this
+
+```javascript
+db.orders.aggregate([
+  {
+    $lookup: {
+      from: "customers",         // The foreign collection
+      localField: "customerId",   // Field from orders
+      foreignField: "_id",        // Field from customers
+      as: "customerDetails"       // Name of the output array
+    }
+  }
+])
+
+
+```
+
+then we see the result like this
+
+```json
+[
+  {
+    "_id": 1,
+    "customerId": 101,
+    "totalAmount": 250,
+    "customerDetails": [
+      { "_id": 101, "name": "Alice", "email": "alice@example.com" }
+    ]
+  },
+  {
+    "_id": 2,
+    "customerId": 102,
+    "totalAmount": 150,
+    "customerDetails": [
+      { "_id": 102, "name": "Bob", "email": "bob@example.com" }
+    ]
+  },
+  {
+    "_id": 3,
+    "customerId": 103,
+    "totalAmount": 300,
+    "customerDetails": []  // No match found, so empty array
+  }
+]
+
+```
+
+we can also use custom pipeline with `$expr` aggregation operator for more complex filtering and projecting in a short code base
+
+```javascript
+db.orders.aggregate([
+  {
+    $lookup: {
+      from: "customers",
+      let: { customer_id: "$customerId" },
+      pipeline: [
+        { $match: { $expr: { $eq: ["$_id", "$$customer_id"] } } },
+        { $project: { name: 1, email: 1 } }
+      ],
+      as: "customerDetails"
+    }
+  }
 ])
 
 ```
