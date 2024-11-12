@@ -272,7 +272,26 @@ db.test.aggregate([
 ```
 
 
+## $bucket aggregation operator
 
+`$bucket` operator groups document based on a specific numeric field and put them into different bucket which are based on range-based interval.
+
+
+```javascript
+db.test.aggregate([
+    {
+        $bucket : {
+            groupBy : "$age", //required parameter and it creates groups by the value of age field
+            boundaries : [20,40,60], //required parameter and it's the interval of value for creating each bucket
+            default : "above 60", // optional parameter and hold the data from outside boundaries
+            output : { // optional parameter for define additional fields and accumulator
+                count : { $sum : 1},
+                fullDoc : { $push : "$$ROOT"}
+            }
+        }
+    }
+])
+```
 
 
 
