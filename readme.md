@@ -293,9 +293,26 @@ db.test.aggregate([
 ])
 ```
 
+## $sort aggregation operator
+
+`$sort` operator sorts documents based on a specific field's value and direction
 
 
 
-
-
+```javascript
+db.test.aggregate([
+    {
+        $bucket : {
+            groupBy : "$age", 
+            boundaries : [20,40,60],
+            default : "above 60", 
+            output : { 
+                count : { $sum : 1},
+                fullDoc : { $push : "$$ROOT"}
+            }
+        }
+    },
+    {$sort : {age : 1}} // use -1 for descending ordered sorting
+])
+```
 
